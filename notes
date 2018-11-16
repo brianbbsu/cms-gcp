@@ -1,0 +1,6 @@
+# Set DNS setting
+gcloud compute project-info add-metadata --metadata VmDnsSetting=ZonalPreferred
+
+
+# Convert CMS conf template to cms.conf
+cat cms.conf.template | sed 's/GCP_ZONE/asia-east1-b/g' | sed 's/GCP_PROJ/cms-server-211312/g' > cms.conf

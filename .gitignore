@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+user-data/**
+!user-data/README

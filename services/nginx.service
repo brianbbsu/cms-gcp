@@ -1,0 +1,10 @@
+[Unit]
+Description=Nginx
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker run --rm --name %n -v /home/core/cms-data/cms.nginx.conf:/etc/nginx/nginx.conf:ro --network=host nginx:alpine
+
+[Install]
+WantedBy=multi-user.target
