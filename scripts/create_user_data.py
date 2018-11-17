@@ -2,12 +2,10 @@
 import yaml
 import json
 import os
+import sys
 from config import config
 
-abspath = os.path.abspath(__file__)
-dname = os.path.dirname(abspath)
-os.chdir(os.path.dirname(dname))
-
+os.chdir(os.path.dirname(sys.path[0]))
 
 def gen_user_data():
     print("[*] Generating User Data")

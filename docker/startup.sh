@@ -2,7 +2,7 @@
 
 wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /cloud_sql_proxy
 chmod +x /cloud_sql_proxy
-/cloud_sql_proxy -instances=cms-server-211312:asia-east1:cmsdb=tcp:5432 --quiet &
+/cloud_sql_proxy -instances=cms-server-211312:asia-east1:cmsdb=tcp:5432 &
 
 if [[ ! -v CMS_INSTANCE_TYPE ]]; then
     echo "CMS_INSTANCE_TYPE not SET!!!"
