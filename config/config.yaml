@@ -1,7 +1,9 @@
 # Google Cloud Platform Related
 GCP_PROJ: "cms-server-211312"
 GCP_ZONE: "asia-east1-b"
+MAIN_INSTANCE_TYPE: "n1-standard-1"
+WORKER_INSTANCE_TYPE: "n1-standard-1"
 
 # CMS Related
 MAX_NUM_OF_WORKER: 32
-CMS_CONTEST_ID: 1
+CMS_CONTEST_ID: 2

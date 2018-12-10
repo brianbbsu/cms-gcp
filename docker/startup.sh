@@ -1,8 +1,8 @@
 #!/bin/bash
 
-wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /cloud_sql_proxy
-chmod +x /cloud_sql_proxy
-/cloud_sql_proxy -instances=cms-server-211312:asia-east1:cmsdb=tcp:5432 &
+#wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /cloud_sql_proxy
+#chmod +x /cloud_sql_proxy
+#/cloud_sql_proxy -instances=cms-server-211312:asia-east1:cmsdb=tcp:5432 &
 
 if [[ ! -v CMS_INSTANCE_TYPE ]]; then
     echo "CMS_INSTANCE_TYPE not SET!!!"
@@ -18,6 +18,8 @@ if [ $CMS_INSTANCE_TYPE = "MAIN" ]; then
     cmsLogService 0
 elif [ $CMS_INSTANCE_TYPE = "WORKER" ]; then
     cmsWorker
+elif [ $CMS_INSTANCE_TYPE = "RANKING" ]; then
+    cmsRankingWebServer
 else
     echo "Unknown instance type"
     exit 1

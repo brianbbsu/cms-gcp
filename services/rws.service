@@ -1,0 +1,11 @@
+[Unit]
+Description=CMS Ranking Web Service
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker run --rm --name %n -v /home/core/cms-data/cms.ranking.conf:/usr/local/etc/cms.ranking.conf:ro --network=host -e CMS_INSTANCE_TYPE=RANKING brianbbsu/cms:1.4rc1
+ExecStop=/usr/bin/docker stop %n
+
+[Install]
+WantedBy=multi-user.target

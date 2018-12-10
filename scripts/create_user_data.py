@@ -12,14 +12,23 @@ def gen_user_data():
     with open(os.path.join("services","nginx.service"),"r") as f:
         nginx_service = f.read()
 
+    with open(os.path.join("services","proxy.service"),"r") as f:
+        proxy_service = f.read()
+
     with open(os.path.join("services","cws.service"),"r") as f:
         cws_service = f.read()
+
+    with open(os.path.join("services","rws.service"),"r") as f:
+        rws_service = f.read()
 
     with open(os.path.join("services","worker.service"),"r") as f:
         worker_service = f.read()
 
     with open(os.path.join("config","cms.conf"),"r") as f:
         cms_conf = f.read()
+
+    with open(os.path.join("config","cms.ranking.conf"),"r") as f:
+        cms_ranking_conf = f.read()
 
     with open(os.path.join("config","cms.nginx.conf"),"r") as f:
         cms_nginx_conf = f.read()
@@ -50,6 +59,16 @@ def gen_user_data():
             "enable" : True,
             "command" : "start",
             "content" : cws_service            
+          },{
+            "name" : "rws.service",
+            "enable" : True,
+            "command" : "start",
+            "content" : rws_service            
+          },{
+            "name" : "proxy.service",
+            "enable" : True,
+            "command" : "start",
+            "content" : proxy_service            
           }
         ]
       },
@@ -63,7 +82,13 @@ def gen_user_data():
           "permission" : "0666",
           "owner" : "root",
           "content" : cms_nginx_conf
+        },{
+          "path" : "/home/core/cms-data/cms.ranking.conf",
+          "permission" : "0666",
+          "owner" : "root",
+          "content" : cms_ranking_conf
         }
+
       ]
     }
 
