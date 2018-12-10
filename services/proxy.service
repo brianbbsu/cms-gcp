@@ -1,14 +1,10 @@
 [Unit]
 Description=Google Cloud SQL Proxy Service
-After=networking.service
-Requires=networking.service
 
 [Service]
-ExecStartPre=/usr/bin/wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /cloud_sql_proxy && /bin/chmod +x /cloud_sql_proxy
+ExecStartPre=/usr/bin/wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /cloud_sql_proxy
+ExecStartPre=/bin/chmod +x /cloud_sql_proxy
 ExecStart=/cloud_sql_proxy -instances=cms-server-211312:asia-east1:cmsdb=tcp:5432
-Restart=always
-StandardOutput=journal
-User=root
 
 [Install]
 WantedBy=multi-user.target
