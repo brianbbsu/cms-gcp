@@ -4,6 +4,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
 tzdata \
 && rm -rf /var/lib/apt/lists/*
 
+ENV TZ=Asia/Taipei
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
 a2ps  \
 build-essential \
@@ -30,6 +33,8 @@ php7.2-fpm \
 phppgadmin  \
 postgresql  \
 postgresql-client  \
+python-pip \
+python-wheel \
 python2.7  \
 python3-pip \
 python3-wheel \
@@ -42,16 +47,12 @@ wget \
 zip \
 && rm -rf /var/lib/apt/lists/*
 
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.utf-8
+
 RUN wget -qO- https://github.com/cms-dev/cms/releases/download/v1.4.rc1/v1.4.rc1.tar.gz | tar xvz -C /
 
 WORKDIR /cms/
-
-ENV LANG en_US.UTF-8
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
-python-pip \
-python-wheel \
-&& rm -rf /var/lib/apt/lists/*
 
 RUN python prerequisites.py -y --as-root install && \
     usermod -a -G cmsuser root && \
