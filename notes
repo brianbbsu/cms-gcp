@@ -4,3 +4,8 @@ gcloud compute project-info add-metadata --metadata VmDnsSetting=ZonalPreferred
 
 # Convert CMS conf template to cms.conf
 cat cms.conf.template | sed 's/GCP_ZONE/asia-east1-b/g' | sed 's/GCP_PROJ/cms-server-211312/g' > cms.conf
+
+#What to do on setup
+1. Create a Cloud SQL PostgreSQL database
+2. Change internal DNS setting - see command above
+3. Create firewall rule for http - gcloud compute --project=cms-server-211312 firewall-rules create cms-http --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 --target-tags=http-server

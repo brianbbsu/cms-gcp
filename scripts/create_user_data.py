@@ -47,6 +47,8 @@ def gen_user_data():
 
     cws_service = cws_service.replace("[CMS_CONTEST_ID]", str(config.CMS_CONTEST_ID))
 
+    proxy_service = proxy_service.replace("GCP_ZONE",config.GCP_ZONE).replace("GCP_PROJ",config.GCP_PROJ)
+
     main_user_data = {
       "coreos" : {
           "units" : [{
@@ -99,6 +101,11 @@ def gen_user_data():
             "enable" : True,
             "command" : "start",
             "content" : worker_service            
+          },{
+            "name" : "proxy.service",
+            "enable" : True,
+            "command" : "start",
+            "content" : proxy_service            
           }
         ]
       },
