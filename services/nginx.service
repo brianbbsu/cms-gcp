@@ -4,7 +4,7 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-ExecStart=/usr/bin/docker run --rm --name %n -v /home/core/cms-data/cms.nginx.conf:/etc/nginx/nginx.conf:ro --network=host nginx:alpine
+ExecStart=/usr/bin/docker run --rm --name %n -v /home/core/cms-data/cms.nginx.conf:/etc/nginx/nginx.conf:ro --network=host imkulikov/nginx-sticky
 ExecStop=/usr/bin/docker stop %n
 
 [Install]

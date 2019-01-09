@@ -49,6 +49,10 @@ def gen_user_data():
 
     proxy_service = proxy_service.replace("GCP_ZONE",config.GCP_ZONE).replace("GCP_PROJ",config.GCP_PROJ)
 
+    cws_service = cws_service.replace("[CMS_DOCKER_IMAGE]", config.CMS_DOCKER_IMAGE)
+    rws_service = rws_service.replace("[CMS_DOCKER_IMAGE]", config.CMS_DOCKER_IMAGE)
+    worker_service = worker_service.replace("[CMS_DOCKER_IMAGE]", config.CMS_DOCKER_IMAGE)
+
     main_user_data = {
       "coreos" : {
           "units" : [{

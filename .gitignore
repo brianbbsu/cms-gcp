@@ -6,3 +6,6 @@ user-data/**
 !user-data/README
 
 .vscode
+
+config/*
+!config/example.*

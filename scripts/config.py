@@ -11,3 +11,5 @@ class Config(object):
 with open(os.path.join("config","config.yaml"),"r") as f:
     config = Config(yaml.safe_load(f))
 
+if __name__ == '__main__':
+    print(config.__dict__)

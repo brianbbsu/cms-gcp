@@ -15,7 +15,7 @@ os.chdir(os.path.dirname(sys.path[0]))
 
 def create_main():
     print("[*] Creating Main CMS Instance")
-    subprocess.run([
+    args = [
       "gcloud", "beta", "compute", "instances", "create", "main",
       "--project", config.GCP_PROJ,
       "--zone", config.GCP_ZONE,
@@ -25,8 +25,12 @@ def create_main():
       "--image-project", "coreos-cloud",
       "--tags", "http-server",
       "--metadata-from-file", "user-data=" + os.path.join("user-data","main.yaml")
-    ], stdout = subprocess.DEVNULL)
-    print("[*] Created Main CMS Instance")
+    ]
+    if config.MAIN_INSTANCE_IP != "":
+        args += ["--address", config.MAIN_INSTANCE_IP]
+    subprocess.run(args, stdout = subprocess.DEVNULL)
+    main, _ = query()
+    print("[*] Created Main CMS Instance IP: {}".format(main[1]))
 
 def create_worker(shard):
     print("[*] Creating CMS Worker{} Instance".format(shard))
@@ -67,7 +71,6 @@ def query():
     proc = subprocess.run([
       "gcloud", "beta", "compute", "instances", "list",
       "--project", config.GCP_PROJ,
-      "--filter", "zone: " + config.GCP_ZONE,
     ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     lines = proc.stdout.decode("utf-8").strip()
     if lines == "":
@@ -84,6 +87,18 @@ def query():
             worker.append(shard)
 
     return main, worker
+
+def run_on_main(cmd):
+    print("[*] Executing \"{}\" on Main CMS Instance".format(cmd))
+    proc = subprocess.run([
+      "gcloud", "beta", "compute", "ssh", "main",
+      "--command", cmd,
+      "--project", config.GCP_PROJ,
+      "--zone", config.GCP_ZONE,
+      "-q"
+    ], stdout = subprocess.PIPE)
+    return proc.stdout.decode("utf-8").strip()
+
 
 def run_thd(fn, *args, **kwargs):
     thd = Thread(target = fn, args = args, kwargs = kwargs)
@@ -109,7 +124,7 @@ def scale_worker(target):
 
 def print_usage():
     print("""
-Usage: manage.py <start|stop|scale|query> [args]
+Usage: manage.py <start|stop|scale|query|exec> [args]
 
 This command line script helps managing CMS containers on GCP.
 
@@ -131,7 +146,10 @@ scale:
 query:
     Get status of current running instances.
 
-    Use this command to get public IP of the main instance.""")
+    Use this command to get public IP of the main instance.
+
+exec:
+    Run given command on Main CMS Instance.""")
 
 
 if __name__ == '__main__':
@@ -179,6 +197,9 @@ if __name__ == '__main__':
         print("There are {} running worker(s):".format(len(cur_workers)))
         if len(cur_workers):
             print("[*] " + ", ".join(list(map(str, cur_workers))))
+    elif args[0] == 'exec':
+        command = " ".join(args[1:])
+        print(run_on_main(command))
     else:
         print("[!] Unknown command!")
         print_usage()
