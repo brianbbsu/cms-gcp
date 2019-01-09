@@ -7,44 +7,45 @@ tzdata \
 ENV TZ=Asia/Taipei
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
-a2ps  \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y \
 build-essential \
 cgroup-lite \
 cppreference-doc-en-html \
 curl \
 file \
-fp-compiler \
 g++ \
 gcc \
 gettext \
 git \
-haskell-platform  \
 iso-codes \
 libcap-dev \
 libcups2-dev \
 libffi-dev \
 libpq-dev \
-mono-mcs \
-nginx-full  \
 openjdk-8-jdk-headless \
-php7.2-cli  \
-php7.2-fpm \
-phppgadmin  \
 postgresql  \
 postgresql-client  \
+python-dev \
 python-pip \
+python-setuptools \
 python-wheel \
 python2.7  \
-python3-pip \
-python3-wheel \
 python3.6  \
-rustc \
 shared-mime-info \
-texlive-latex-base  \
 vim \
 wget \
 zip \
+#fp-compiler \
+#haskell-platform  \
+#mono-mcs \
+#php7.2-cli  \
+#php7.2-fpm \
+#phppgadmin  \
+#python3-dev \
+#python3-pip \
+#python3-setuptools \
+#python3-wheel \
+#rustc \
 && rm -rf /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8
@@ -56,7 +57,7 @@ WORKDIR /cms/
 
 RUN python prerequisites.py -y --as-root install && \
     usermod -a -G cmsuser root && \
-    python -m pip install -r requirements.txt && \
+    python -m pip install --no-cache-dir -r requirements.txt && \
     python setup.py install
 
 COPY startup.sh /startup.sh
