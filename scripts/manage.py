@@ -99,6 +99,29 @@ def run_on_main(cmd):
     ], stdout = subprocess.PIPE)
     return proc.stdout.decode("utf-8").strip()
 
+def send_ranking_data():
+    print("[*] Sending ranking logo, flags, and faces to Main CMS Instance")
+    file_list = []
+    for root, dirs, files in os.walk("ranking"):
+        for file in files:
+            if file.endswith(".png") or file.endswith(".jpg") or file.endswith(".bmp") or file.endswith(".gif"):
+                 file_list.append(os.path.join(root, file))
+    if not len(file_list):
+        print("[!] There should be at least one image in the folder!")
+        return
+    proc1 = subprocess.run(
+      ["tar", "-cz"] + file_list,
+      stdout = subprocess.PIPE)
+    sz = sys.getsizeof(proc1.stdout)
+    print("[*] Sending {} file(s), size: {:.2f} KB....".format(len(file_list), sz / 8 / 1024))
+    proc2 = subprocess.run([
+      "gcloud", "beta", "compute", "ssh", "main",
+      "--command", "cat | sudo tar -xzC /home/core/",
+      "--project", config.GCP_PROJ,
+      "--zone", config.GCP_ZONE,
+      "-q"
+    ], input = proc1.stdout)
+    
 
 def run_thd(fn, *args, **kwargs):
     thd = Thread(target = fn, args = args, kwargs = kwargs)
@@ -124,7 +147,7 @@ def scale_worker(target):
 
 def print_usage():
     print("""
-Usage: manage.py <start|stop|scale|query|exec> [args]
+Usage: manage.py <start|stop|scale|query|exec|ranking> [args]
 
 This command line script helps managing CMS containers on GCP.
 
@@ -149,7 +172,14 @@ query:
     Use this command to get public IP of the main instance.
 
 exec:
-    Run given command on Main CMS Instance.""")
+    Run given command on Main CMS Instance.
+    
+ranking:
+    ranking <send|get>
+    
+    send:
+        Send logo, flags, and faces stored in 'ranking' folder to the server.
+""")
 
 
 if __name__ == '__main__':
@@ -200,6 +230,17 @@ if __name__ == '__main__':
     elif args[0] == 'exec':
         command = " ".join(args[1:])
         print(run_on_main(command))
+    elif args[0] == 'ranking':
+        if len(args) == 1:
+            print("[!] Expect 'send' or 'get' operation")
+            print_usage()
+            exit(1)
+        if args[1] == "send":
+            send_ranking_data()
+        else:
+            print("[!] Operation should be one of 'send' or 'get'")
+            print_usage()
+            exit(1)
     else:
         print("[!] Unknown command!")
         print_usage()

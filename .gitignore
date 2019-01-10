@@ -9,3 +9,10 @@ user-data/**
 
 config/*
 !config/example.*
+
+ranking/**
+!ranking/faces
+!ranking/flags
+!ranking/README
+
+!**/.keep

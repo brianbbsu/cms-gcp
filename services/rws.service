@@ -4,7 +4,8 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-ExecStart=/usr/bin/docker run --rm --name %n -v /home/core/cms-data/cms.ranking.conf:/usr/local/etc/cms.ranking.conf:ro --network=host -e CMS_INSTANCE_TYPE=RANKING [CMS_DOCKER_IMAGE]
+ExecStartPre=/bin/mkdir /home/core/ranking
+ExecStart=/usr/bin/docker run --rm --name %n -v /home/core/cms-data/cms.ranking.conf:/usr/local/etc/cms.ranking.conf:ro -v /home/core/ranking:/var/local/lib/cms/ranking --network=host -e CMS_INSTANCE_TYPE=RANKING [CMS_DOCKER_IMAGE]
 ExecStop=/usr/bin/docker stop %n
 
 [Install]
