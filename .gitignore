@@ -9,6 +9,7 @@ user-data/**
 
 config/*
 !config/example.*
+!config/README.md
 
 ranking/**
 !ranking/faces
