@@ -23,7 +23,9 @@ def create_main():
       "--scopes", "https://www.googleapis.com/auth/sqlservice.admin",
       "--image-family", "coreos-stable",
       "--image-project", "coreos-cloud",
+      "--boot-disk-size", "20GB",
       "--tags", "http-server",
+      "--verbosity", "error",
       "--metadata-from-file", "user-data=" + os.path.join("user-data","main.yaml")
     ]
     if config.MAIN_INSTANCE_IP != "":
@@ -42,6 +44,8 @@ def create_worker(shard):
       "--scopes", "https://www.googleapis.com/auth/sqlservice.admin",
       "--image-family", "coreos-stable",
       "--image-project", "coreos-cloud",
+      "--boot-disk-size", "20GB",
+      "--verbosity", "error",
       "--metadata-from-file", "user-data=" + os.path.join("user-data","worker.yaml")
     ], stdout = subprocess.DEVNULL)
     print("[*] Created CMS Worker{} Instance".format(shard))
@@ -88,7 +92,7 @@ def query():
 
     return main, worker
 
-def run_on_main(cmd):
+def run_on_main(cmd, pipe = False):
     print("[*] Executing \"{}\" on Main CMS Instance".format(cmd))
     proc = subprocess.run([
       "gcloud", "beta", "compute", "ssh", "main",
@@ -96,8 +100,9 @@ def run_on_main(cmd):
       "--project", config.GCP_PROJ,
       "--zone", config.GCP_ZONE,
       "-q"
-    ], stdout = subprocess.PIPE)
-    return proc.stdout.decode("utf-8").strip()
+    ], stdout = (subprocess.PIPE if pipe else None))
+    if pipe:
+        return proc.stdout.decode("utf-8").strip()
 
 def send_ranking_data():
     print("[*] Sending ranking logo, flags, and faces to Main CMS Instance")
@@ -229,7 +234,7 @@ if __name__ == '__main__':
             print("[*] " + ", ".join(list(map(str, cur_workers))))
     elif args[0] == 'exec':
         command = " ".join(args[1:])
-        print(run_on_main(command))
+        run_on_main(command)
     elif args[0] == 'ranking':
         if len(args) == 1:
             print("[!] Expect 'send' or 'get' operation")
@@ -241,6 +246,14 @@ if __name__ == '__main__':
             print("[!] Operation should be one of 'send' or 'get'")
             print_usage()
             exit(1)
+    elif args[0] == 'log':
+        if len(args) > 1 and args[1] == "-f":
+            try:
+                run_on_main("docker logs -f cws.service")
+            except KeyboardInterrupt:
+                pass
+        else:
+            run_on_main("docker logs cws.service")
     else:
         print("[!] Unknown command!")
         print_usage()
