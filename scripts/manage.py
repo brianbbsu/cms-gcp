@@ -20,11 +20,11 @@ def create_main():
       "--project", config.GCP_PROJ,
       "--zone", config.GCP_ZONE,
       "--machine-type", config.MAIN_INSTANCE_TYPE,
-      "--scopes", "https://www.googleapis.com/auth/sqlservice.admin",
+      "--scopes", "https://www.googleapis.com/auth/sqlservice.admin,https://www.googleapis.com/auth/logging.admin,https://www.googleapis.com/auth/monitoring",
       "--image-family", "coreos-stable",
       "--image-project", "coreos-cloud",
       "--boot-disk-size", "20GB",
-      "--tags", "http-server",
+      "--tags", "http-server,https-server",
       "--verbosity", "error",
       "--metadata-from-file", "user-data=" + os.path.join("user-data","main.yaml")
     ]

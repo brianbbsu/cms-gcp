@@ -129,8 +129,6 @@ def gen_user_data():
     with open(os.path.join("user-data","worker.yaml"),"w") as f:
         f.write("#cloud-config\n\n")
         f.write(yaml.dump(worker_user_data))
-    
-    print("[*] Generated User Data")
 
 if __name__ == "__main__":
     gen_user_data()
